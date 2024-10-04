@@ -32,4 +32,14 @@ This is my submission for chatgpt writer's take home assignment
    what I think should be done: Since from a UX POV - overwriting what the user
    had entered before instead of appending without a warning would be bad, a
    warning with a prompt to overwrite the reply should be given. There are other
-   ways to handle this but with their own tradeoffs.
+   ways to handle this, each with their own tradeoffs.
+
+# What I would do to further improve the app
+
+1. Handle the undefined behavior mentioned above in a graceful manner
+1. Implement the regenerate functionality
+1. Use svgr plugin to load the svgs inline through vite instead of hard coding
+   the markup
+1. Refactor the ui components to be more modular - similar to shadcn (a personal
+   preference, since I believe that its the simplest way to write UI while
+   allowing for easy one-off modifications)
