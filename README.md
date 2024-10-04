@@ -43,3 +43,6 @@ This is my submission for chatgpt writer's take home assignment
 1. Refactor the ui components to be more modular - similar to shadcn (a personal
    preference, since I believe that its the simplest way to write UI while
    allowing for easy one-off modifications)
+1. Add a toasts system or some way to notify the user if the API response fails.
+   In this demo a static response is returned but a real app would make an API call
+   that can fail and if it fails silently then thats bad UX.
