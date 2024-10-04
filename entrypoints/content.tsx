@@ -9,45 +9,48 @@ export default defineContentScript({
   cssInjectionMode: "ui",
   runAt: "document_idle",
   async main(ctx) {
-    const ui = await createShadowRootUi(ctx, {
-      name: "example-ui",
-      position: "inline",
+    document.addEventListener("focusin", async (e) => {
+      const target = e.target;
+      if (!target || !(target instanceof Element)) return;
+      if (!target.classList.contains("msg-form__contenteditable")) return;
 
-      append: async (_, ui) => {
-        if (window.location.href.includes("google.com")) {
-          document.body.append(ui);
-          return;
-        }
-        // Ensure the ui isnt appended twice
-        ui.remove();
+      const ui = await createShadowRootUi(ctx, {
+        name: "example-ui",
+        position: "inline",
 
-        const anchor: Element = await new Promise((resolve) => {
-          const observer = new MutationObserver((_, observer) => {
-            const inputField = document.querySelector(textBoxParentSelector);
+        append: async (_, ui) => {
+          if (window.location.href.includes("google.com")) {
+            document.body.append(ui);
+            return;
+          }
+          // Ensure the ui isnt appended twice
+          ui.remove();
 
-            if (inputField) {
-              resolve(inputField);
-            }
-          });
-          observer.observe(document.body, { childList: true, subtree: true });
-        });
-        anchor.append(ui);
-      },
-      onMount: (shadowRoot) => {
-        const app = document.createElement("div");
-        app.id = "__linkedin-gpt__";
-        shadowRoot.append(app);
+          const anchor = target.parentNode?.parentNode?.parentNode;
+          if (!anchor) {
+            console.log("failed to get anchor");
+            return;
+          }
 
-        const root = createRoot(app);
-        root.render(<LinkedinGptApp />);
+          anchor.append(ui);
+        },
+        onMount: (shadowRoot) => {
+          const app = document.createElement("div");
+          app.id = "__linkedin-gpt__";
+          shadowRoot.append(app);
 
-        return root;
-      },
-      onRemove: (root) => {
-        root?.unmount();
-      },
+          const root = createRoot(app);
+          root.render(<LinkedinGptApp />);
+
+          return root;
+        },
+
+        onRemove: (root) => {
+          root?.unmount();
+        },
+      });
+
+      ui.mount();
     });
-
-    ui.mount();
   },
 });
