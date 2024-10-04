@@ -46,3 +46,14 @@ This is my submission for chatgpt writer's take home assignment
 1. Add a toasts system or some way to notify the user if the API response fails.
    In this demo a static response is returned but a real app would make an API call
    that can fail and if it fails silently then thats bad UX.
+
+# Additional Features/Ideas
+These are the things that can be added as features as opposed to the aforementioned points 
+where improvements in terms of UI/UX or just on the technical side of things.
+
+1. Read the user's chat to autofill the given prompt (done in background)
+1. Collect data and run some sort of sentimental analysis
+   and collect data to improve prompt suggestions
+1. Use AI to find new people to connect with based on chatting history - can be done
+   by prompting the search bar with autofills
+1. Support different languages and provide translations
