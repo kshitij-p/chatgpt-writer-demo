@@ -141,6 +141,7 @@ export const PromptDialog = ({
             className={cn(mustRegenerate ? "gap-4" : "gap-[10px]")}
             disabled={isLoadingAskGptStatus}
             onClick={async () => {
+              if (mustRegenerate) return;
               setValidateOnInput(true);
               if (!validateInput(prompt)) {
                 return;

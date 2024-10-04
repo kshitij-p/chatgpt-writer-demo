@@ -12,6 +12,26 @@ export default defineContentScript({
       if (!target || !(target instanceof Element)) return;
       if (!target.classList.contains("msg-form__contenteditable")) return;
 
+      let anchor: ParentNode | undefined | null = null;
+      const handleBlur = (e: FocusEvent) => {
+        const newlyFocusedEl = e.relatedTarget;
+
+        if (!ui || !anchor) return;
+
+        if (newlyFocusedEl instanceof Node && anchor.contains(newlyFocusedEl)) {
+          return;
+        }
+
+        if (
+          newlyFocusedEl &&
+          e.target instanceof Node &&
+          ui.shadow.host.contains(e.target)
+        )
+          return;
+
+        ui.remove();
+      };
+
       const ui = await createShadowRootUi(ctx, {
         name: "example-ui",
         position: "inline",
@@ -20,7 +40,7 @@ export default defineContentScript({
           // Ensure the ui isnt appended twice
           ui.remove();
 
-          const anchor = target.parentNode?.parentNode?.parentNode;
+          anchor = target.parentNode?.parentNode?.parentNode;
           if (!anchor) {
             console.error("failed to get anchor to load the app into.");
             return;
@@ -30,17 +50,22 @@ export default defineContentScript({
         },
         onMount: (shadowRoot) => {
           const app = document.createElement("div");
-          app.id = "__linkedin-gpt__";
+          app.id = "__linkedin-gpt-app-root__";
           shadowRoot.append(app);
 
           const root = createRoot(app);
           root.render(<LinkedinGptChatApp />);
+
+          if (anchor) {
+            document.addEventListener("focusout", handleBlur);
+          }
 
           return root;
         },
 
         onRemove: (root) => {
           root?.unmount();
+          document.removeEventListener("focusout", handleBlur);
         },
       });
 
