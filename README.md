@@ -1,10 +1,10 @@
 # Preview
 
-![Video preview of the project](docs/video.mp4 "a title")
+https://github.com/user-attachments/assets/b5089cad-63b8-4b03-a0ad-376c2d577774
 
-In case the video doesnt load in Github,
-https://drive.google.com/file/d/1kQX3fvFHorIPZN8uc1TZN9uYiZ-piaG4/view?usp=sharing -
-you can view it from here instead.
+In case the preview doesn't load for some reason, you can use this link
+instead -
+https://drive.google.com/file/d/1kQX3fvFHorIPZN8uc1TZN9uYiZ-piaG4/view?usp=sharing
 
 # About
 
