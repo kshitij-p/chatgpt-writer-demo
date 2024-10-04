@@ -23,3 +23,13 @@ This is my submission for chatgpt writer's take home assignment
 1. The insert button inserts the reply given by the AI into the linkedin chat
 1. AI button's mounting and unmounting edge cases (dialog backdrop is clicked,
    area outside the linkedin DM's textbox is clicked, etc)
+
+# Undefined Behavior
+
+1. If the textbox already has some content in it and then the AI's reply is
+   inserted, then the reply is appended. The requirement doc didnt mention this
+   case so I didn't handle this case. If I were to handle this, then this is
+   what I think should be done: Since from a UX POV - overwriting what the user
+   had entered before instead of appending without a warning would be bad, a
+   warning with a prompt to overwrite the reply should be given. There are other
+   ways to handle this but with their own tradeoffs.
