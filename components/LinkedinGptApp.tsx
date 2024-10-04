@@ -37,8 +37,13 @@ const Message = ({
   );
 };
 
-const LinkedinGptApp = () => {
-  const [open, setOpen] = useState(false);
+const PromptDialog = ({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (val: boolean) => void;
+}) => {
   const [prompt, setPrompt] = useState("");
 
   const [error, setError] = useState("");
@@ -86,6 +91,90 @@ const LinkedinGptApp = () => {
   };
 
   return (
+    <Dialog open={open} setOpen={setOpen}>
+      <div className="flex flex-col gap-[26px]">
+        {conversation ? (
+          <>
+            <Message bySelf>{conversation.prompt}</Message>
+            {conversation.reply ? (
+              <Message bySelf={false}>{conversation.reply}</Message>
+            ) : isLoadingAskGptStatus ? (
+              <div>Loading...</div>
+            ) : null}{" "}
+          </>
+        ) : null}
+
+        <div className="flex flex-col gap-1">
+          <Input
+            className="h-[61px] text-2xl text-gray-500 placeholder:text-gray-300"
+            disabled={isLoadingAskGptStatus}
+            placeholder="Your prompt"
+            value={prompt}
+            onChange={(e) => {
+              setPrompt(e.currentTarget.value);
+              if (validateOnInput) {
+                validatePrompt(e.currentTarget.value);
+              }
+            }}
+          />
+          {error ? (
+            <p className="text-red-600 text-lg font-semibold">{error}</p>
+          ) : null}
+        </div>
+        <div className="flex self-end gap-[26px]">
+          {conversation ? (
+            <Button
+              className="gap-3"
+              disabled={isLoadingAskGptStatus}
+              variant="secondary"
+              onClick={() => {
+                setOpen(false);
+                writeText(conversation.reply);
+              }}
+            >
+              <MagicWandIcon />
+              <span>Insert</span>
+            </Button>
+          ) : null}
+          <Button
+            className={cn(mustRegenerate ? "gap-4" : "gap-[10px]")}
+            disabled={isLoadingAskGptStatus}
+            onClick={async () => {
+              setValidateOnInput(true);
+              if (!validatePrompt(prompt)) {
+                return;
+              }
+              const givenPrompt = prompt;
+              setConversation({
+                prompt: givenPrompt,
+                reply: "",
+              });
+
+              setPrompt("");
+
+              const reply = await getReply();
+              if (!reply) return;
+
+              setConversation((curr) => {
+                if (!curr) return { prompt: givenPrompt, reply };
+                return { ...curr, reply };
+              });
+              setValidateOnInput(false);
+            }}
+          >
+            {!mustRegenerate ? <SendIcon /> : <RefreshIcon />}
+            <span>{!mustRegenerate ? "Generate" : "Regenerate"}</span>
+          </Button>
+        </div>
+      </div>
+    </Dialog>
+  );
+};
+
+const LinkedinGptApp = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
     <>
       <IconButton
         className="absolute bottom-[21px] right-[57px]"
@@ -93,83 +182,7 @@ const LinkedinGptApp = () => {
           setOpen(true);
         }}
       />
-      <Dialog open={open} setOpen={setOpen}>
-        <div className="flex flex-col gap-[26px]">
-          {conversation ? (
-            <>
-              <Message bySelf>{conversation.prompt}</Message>
-              {conversation.reply ? (
-                <Message bySelf={false}>{conversation.reply}</Message>
-              ) : isLoadingAskGptStatus ? (
-                <div>Loading...</div>
-              ) : null}{" "}
-            </>
-          ) : null}
-
-          <div className="flex flex-col gap-1">
-            <Input
-              className="h-[61px] text-2xl text-gray-500 placeholder:text-gray-300"
-              disabled={isLoadingAskGptStatus}
-              placeholder="Your prompt"
-              value={prompt}
-              onChange={(e) => {
-                setPrompt(e.currentTarget.value);
-                if (validateOnInput) {
-                  validatePrompt(e.currentTarget.value);
-                }
-              }}
-            />
-            {error ? (
-              <p className="text-red-600 text-lg font-semibold">{error}</p>
-            ) : null}
-          </div>
-          <div className="flex self-end gap-[26px]">
-            {conversation ? (
-              <Button
-                className="gap-3"
-                disabled={isLoadingAskGptStatus}
-                variant="secondary"
-                onClick={() => {
-                  setOpen(false);
-                  writeText(conversation.reply);
-                }}
-              >
-                <MagicWandIcon />
-                <span>Insert</span>
-              </Button>
-            ) : null}
-            <Button
-              className={cn(mustRegenerate ? "gap-4" : "gap-[10px]")}
-              disabled={isLoadingAskGptStatus}
-              onClick={async () => {
-                setValidateOnInput(true);
-                if (!validatePrompt(prompt)) {
-                  return;
-                }
-                const givenPrompt = prompt;
-                setConversation({
-                  prompt: givenPrompt,
-                  reply: "",
-                });
-
-                setPrompt("");
-
-                const reply = await getReply();
-                if (!reply) return;
-
-                setConversation((curr) => {
-                  if (!curr) return { prompt: givenPrompt, reply };
-                  return { ...curr, reply };
-                });
-                setValidateOnInput(false);
-              }}
-            >
-              {!mustRegenerate ? <SendIcon /> : <RefreshIcon />}
-              <span>{!mustRegenerate ? "Generate" : "Regenerate"}</span>
-            </Button>
-          </div>
-        </div>
-      </Dialog>
+      <PromptDialog open={open} setOpen={setOpen} />
     </>
   );
 };
