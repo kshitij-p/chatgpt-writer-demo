@@ -2,7 +2,7 @@ import IconButton from "@/components/IconButton";
 import { MagicWandIcon } from "@/components/icons/MagicWandIcon";
 import { PromptDialog } from "./PromptDialog";
 
-const LinkedinGptChatApp = () => {
+const LinkedinGptChatApp = ({ onClose }: { onClose: () => void }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -15,7 +15,15 @@ const LinkedinGptChatApp = () => {
       >
         <MagicWandIcon />
       </IconButton>
-      <PromptDialog open={open} setOpen={setOpen} />
+      <PromptDialog
+        open={open}
+        setOpen={(open) => {
+          setOpen(open);
+          if (!open) {
+            onClose();
+          }
+        }}
+      />
     </>
   );
 };

@@ -1,14 +1,22 @@
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import LinkedinGptChatApp from "@/apps/LinkedinGptChatApp";
 import "../assets/globals.css";
+import { ShadowRootContentScriptUi } from "wxt/client";
 
 export default defineContentScript({
   matches: ["*://*.linkedin.com/*"],
   cssInjectionMode: "ui",
   runAt: "document_idle",
   async main(ctx) {
+    let ui: ShadowRootContentScriptUi<Root> | undefined;
+
     document.addEventListener("focusin", async (e) => {
+      //Prevent the shadow root ui from mounting twice
+      if (ui && ui.mounted) return;
+
       const target = e.target;
+
+      //Check if the focused target is the linkedin DMs textbox
       if (!target || !(target instanceof Element)) return;
       if (!target.classList.contains("msg-form__contenteditable")) return;
 
@@ -22,17 +30,17 @@ export default defineContentScript({
           return;
         }
 
+        const prevFocusedEl = e.target;
         if (
-          newlyFocusedEl &&
-          e.target instanceof Node &&
-          ui.shadow.host.contains(e.target)
+          prevFocusedEl instanceof Node &&
+          ui.shadow.host.contains(prevFocusedEl)
         )
           return;
 
         ui.remove();
       };
 
-      const ui = await createShadowRootUi(ctx, {
+      ui = await createShadowRootUi(ctx, {
         name: "example-ui",
         position: "inline",
 
@@ -54,7 +62,13 @@ export default defineContentScript({
           shadowRoot.append(app);
 
           const root = createRoot(app);
-          root.render(<LinkedinGptChatApp />);
+          root.render(
+            <LinkedinGptChatApp
+              onClose={() => {
+                ui?.remove();
+              }}
+            />
+          );
 
           if (anchor) {
             document.addEventListener("focusout", handleBlur);

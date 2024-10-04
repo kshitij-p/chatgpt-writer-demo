@@ -3,6 +3,7 @@ const calc = (num) => `calc(${num} * var(--srem))`;
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
+    "./apps/**/*.{html,js,tsx,ts}",
     "./components/**/*.{html,js,tsx,ts}",
     "./entrypoints/**/*.{html,js,tsx,ts}",
   ],

@@ -24,6 +24,9 @@ const Dialog = ({
     <>
       <dialog
         className="[&::backdrop]:bg-[hsla(240,_16%,_6%,_0.2)] h-max w-max bg-[hsla(210,_20%,_98%,_1)] text-black rounded-[15px] max-w-[90vw]"
+        onClose={() => {
+          setOpen(false);
+        }}
         onClick={(e) => {
           if (!diagRef.current || !e.target || !(e.target instanceof Node))
             return;
