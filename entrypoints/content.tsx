@@ -1,10 +1,8 @@
 import { createRoot, Root } from "react-dom/client";
 import LinkedinGptApp from "@/components/LinkedinGptApp";
-import ReactDOM from "react";
 import "../assets/globals.css";
-import { createPortal } from "react-dom";
 
-const textBoxParentSelector = ".msg-form__msg-content-container--scrollable";
+const textBoxParentSelector = ".msg-form__msg-content-container";
 
 export default defineContentScript({
   matches: ["*://*.linkedin.com/*", "*://*.google.com/*"],
@@ -16,6 +14,10 @@ export default defineContentScript({
       position: "inline",
 
       append: async (_, ui) => {
+        if (window.location.href.includes("google.com")) {
+          document.body.append(ui);
+          return;
+        }
         // Ensure the ui isnt appended twice
         ui.remove();
 
