@@ -23,7 +23,7 @@ const Dialog = ({
   return (
     <>
       <dialog
-        className="[&::backdrop]:bg-[hsla(240,_16%,_6%,_0.2)] h-max w-max bg-[hsla(210,_20%,_98%,_1)] text-black rounded-[15px] max-w-[90vw]"
+        className="h-max w-max max-w-[90vw] rounded-[15px] bg-[hsla(210,_20%,_98%,_1)] text-black [&::backdrop]:bg-[hsla(240,_16%,_6%,_0.2)]"
         onClose={() => {
           setOpen(false);
         }}
@@ -36,7 +36,7 @@ const Dialog = ({
         }}
         ref={diagRef}
       >
-        <div className="h-full bg-[hsla(210,_20%,_98%,_1)] p-[26px] w-[870px]">
+        <div className="h-full w-[870px] bg-[hsla(210,_20%,_98%,_1)] p-[26px]">
           {children}
         </div>
       </dialog>

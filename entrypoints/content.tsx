@@ -67,7 +67,7 @@ export default defineContentScript({
               onClose={() => {
                 ui?.remove();
               }}
-            />
+            />,
           );
 
           if (anchor) {

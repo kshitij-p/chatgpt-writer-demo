@@ -21,10 +21,10 @@ const Message = ({
   return (
     <div
       className={cn(
-        "text-gray-500 p-4 rounded-xl max-w-max text-2xl",
+        "max-w-max rounded-xl p-4 text-2xl text-gray-500",
         bySelf
-          ? "bg-gray-100 self-end"
-          : "bg-[hsla(214,_95%,_93%,_1)] self-start"
+          ? "self-end bg-gray-100"
+          : "self-start bg-[hsla(214,_95%,_93%,_1)]",
       )}
     >
       {children}
@@ -119,10 +119,10 @@ export const PromptDialog = ({
             }}
           />
           {error ? (
-            <p className="text-red-600 text-lg font-semibold">{error}</p>
+            <p className="text-lg font-semibold text-red-600">{error}</p>
           ) : null}
         </div>
-        <div className="flex self-end gap-[26px]">
+        <div className="flex gap-[26px] self-end">
           {conversation ? (
             <Button
               className="gap-3"
