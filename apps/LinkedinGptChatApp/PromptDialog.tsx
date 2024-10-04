@@ -1,11 +1,9 @@
 import { cn } from "@/lib/utils";
 import Dialog from "@/components/Dialog";
-import IconButton from "@/components/IconButton";
 import React from "react";
 import Button from "@/components/Button";
 import { SendIcon } from "@/components/icons/SendIcon";
 import { RefreshIcon } from "@/components/icons/RefreshIcon";
-import { MagicWandIcon } from "@/components/icons/MagicWandIcon";
 import { ChatGptApi } from "@/lib/api";
 import DownArrowIcon from "@/components/icons/DownArrowIcon";
 
@@ -34,7 +32,7 @@ const Message = ({
   );
 };
 
-const PromptDialog = ({
+export const PromptDialog = ({
   open,
   setOpen,
 }: {
@@ -173,23 +171,3 @@ const PromptDialog = ({
     </Dialog>
   );
 };
-
-const LinkedinGptChatApp = () => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <IconButton
-        className="absolute bottom-[21px] right-[57px]"
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        <MagicWandIcon />
-      </IconButton>
-      <PromptDialog open={open} setOpen={setOpen} />
-    </>
-  );
-};
-
-export default LinkedinGptChatApp;

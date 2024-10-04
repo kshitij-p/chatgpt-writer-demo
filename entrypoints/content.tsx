@@ -22,7 +22,7 @@ export default defineContentScript({
 
           const anchor = target.parentNode?.parentNode?.parentNode;
           if (!anchor) {
-            console.log("failed to get anchor to load the app into.");
+            console.error("failed to get anchor to load the app into.");
             return;
           }
 
