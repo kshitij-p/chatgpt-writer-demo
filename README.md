@@ -37,7 +37,8 @@ This is my submission for chatgpt writer's take home assignment
 # What I would do to further improve the app
 
 1. Handle the undefined behavior mentioned above in a graceful manner
-1. Implement the regenerate functionality
+1. Implement the regenerate functionality - if regenerating we could perhaps
+   provide options to retain the previous reply or not
 1. Use svgr plugin to load the svgs inline through vite instead of hard coding
    the markup
 1. Refactor the ui components to be more modular - similar to shadcn (a personal
@@ -49,7 +50,7 @@ This is my submission for chatgpt writer's take home assignment
 
 # Additional Features/Ideas
 These are the things that can be added as features as opposed to the aforementioned points 
-where improvements in terms of UI/UX or just on the technical side of things.
+which were improvements in terms of UI/UX or just on the technical side of things.
 
 1. Read the user's chat to autofill the given prompt (done in background)
 1. Collect data and run some sort of sentimental analysis
