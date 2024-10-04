@@ -1,22 +1,19 @@
 import { cn } from "@/lib/utils";
-import Dialog from "./Dialog";
-import IconButton from "./IconButton";
+import Dialog from "@/components/Dialog";
+import IconButton from "@/components/IconButton";
 import React from "react";
-import Button from "./Button";
-import { SendIcon } from "./icons/SendIcon";
-import { RefreshIcon } from "./icons/RefreshIcon";
-import { MagicWandIcon } from "./icons/MagicWandIcon";
+import Button from "@/components/Button";
+import { SendIcon } from "@/components/icons/SendIcon";
+import { RefreshIcon } from "@/components/icons/RefreshIcon";
+import { MagicWandIcon } from "@/components/icons/MagicWandIcon";
+import { ChatGptApi } from "@/lib/api";
+import DownArrowIcon from "@/components/icons/DownArrowIcon";
 
 const textboxSelector = ".msg-form__contenteditable[role='textbox']";
 
 type Conversation = {
   prompt: string;
   reply: string;
-};
-
-const askGpt = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return "Thank you for the opportunity! If you have any more questions or if there's anything else I can help you with, feel free to ask.";
 };
 
 const Message = ({
@@ -46,34 +43,40 @@ const PromptDialog = ({
 }) => {
   const [prompt, setPrompt] = useState("");
 
-  const [error, setError] = useState("");
   const [conversation, setConversation] = useState<Conversation | undefined>();
-  const [validateOnInput, setValidateOnInput] = useState(false);
-
   const mustRegenerate = !!conversation;
+
+  const [error, setError] = useState("");
+  const [validateOnInput, setValidateOnInput] = useState(false);
 
   const [askGptStatus, setAskGptStatus] = useState<
     "loading" | "idle" | "error"
   >("idle");
   const isLoadingAskGptStatus = askGptStatus === "loading";
 
-  const writeText = (text: string) => {
+  const insertIntoTextbox = (text: string) => {
     const textbox = document.querySelector(textboxSelector);
+
     if (!textbox || !(textbox instanceof HTMLElement)) {
       return;
     }
-    const placeholder = document.querySelector(".msg-form__placeholder");
-    if (placeholder) {
-      placeholder.remove();
-    }
 
-    textbox.innerHTML = `<p>${text}</p>`;
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", text);
+
+    const pasteEvent = new ClipboardEvent("paste", {
+      clipboardData: dataTransfer,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    textbox.dispatchEvent(pasteEvent);
   };
 
   const getReply = async () => {
     setAskGptStatus("loading");
     try {
-      const resp = await askGpt();
+      const resp = await ChatGptApi.ask();
       setAskGptStatus("idle");
       return resp;
     } catch (e) {
@@ -81,7 +84,7 @@ const PromptDialog = ({
     }
   };
 
-  const validatePrompt = (value: string) => {
+  const validateInput = (value: string) => {
     if (!value) {
       setError("Cannot be empty");
       return false;
@@ -113,7 +116,7 @@ const PromptDialog = ({
             onChange={(e) => {
               setPrompt(e.currentTarget.value);
               if (validateOnInput) {
-                validatePrompt(e.currentTarget.value);
+                validateInput(e.currentTarget.value);
               }
             }}
           />
@@ -129,10 +132,10 @@ const PromptDialog = ({
               variant="secondary"
               onClick={() => {
                 setOpen(false);
-                writeText(conversation.reply);
+                insertIntoTextbox(conversation.reply);
               }}
             >
-              <MagicWandIcon />
+              <DownArrowIcon />
               <span>Insert</span>
             </Button>
           ) : null}
@@ -141,7 +144,7 @@ const PromptDialog = ({
             disabled={isLoadingAskGptStatus}
             onClick={async () => {
               setValidateOnInput(true);
-              if (!validatePrompt(prompt)) {
+              if (!validateInput(prompt)) {
                 return;
               }
               const givenPrompt = prompt;
@@ -171,7 +174,7 @@ const PromptDialog = ({
   );
 };
 
-const LinkedinGptApp = () => {
+const LinkedinGptChatApp = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -181,10 +184,12 @@ const LinkedinGptApp = () => {
         onClick={() => {
           setOpen(true);
         }}
-      />
+      >
+        <MagicWandIcon />
+      </IconButton>
       <PromptDialog open={open} setOpen={setOpen} />
     </>
   );
 };
 
-export default LinkedinGptApp;
+export default LinkedinGptChatApp;

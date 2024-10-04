@@ -1,11 +1,9 @@
-import { createRoot, Root } from "react-dom/client";
-import LinkedinGptApp from "@/components/LinkedinGptApp";
+import { createRoot } from "react-dom/client";
+import LinkedinGptChatApp from "@/apps/LinkedinGptChatApp";
 import "../assets/globals.css";
 
-const textBoxParentSelector = ".msg-form__msg-content-container";
-
 export default defineContentScript({
-  matches: ["*://*.linkedin.com/*", "*://*.google.com/*"],
+  matches: ["*://*.linkedin.com/*"],
   cssInjectionMode: "ui",
   runAt: "document_idle",
   async main(ctx) {
@@ -19,16 +17,12 @@ export default defineContentScript({
         position: "inline",
 
         append: async (_, ui) => {
-          if (window.location.href.includes("google.com")) {
-            document.body.append(ui);
-            return;
-          }
           // Ensure the ui isnt appended twice
           ui.remove();
 
           const anchor = target.parentNode?.parentNode?.parentNode;
           if (!anchor) {
-            console.log("failed to get anchor");
+            console.log("failed to get anchor to load the app into.");
             return;
           }
 
@@ -40,7 +34,7 @@ export default defineContentScript({
           shadowRoot.append(app);
 
           const root = createRoot(app);
-          root.render(<LinkedinGptApp />);
+          root.render(<LinkedinGptChatApp />);
 
           return root;
         },
