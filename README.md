@@ -1,3 +1,7 @@
-# WXT + React
+# Preview
 
-This template should help get you started developing with React in WXT.
+![Video preview of the project](docs/video.mp4 "a title")
+
+# About
+
+This is my submission for chatgpt writer's take home assignment
